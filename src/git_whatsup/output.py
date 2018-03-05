@@ -11,6 +11,9 @@ from .datastructures import BranchStatus, MergeStatus, ConflictType
 
 def print_json(branch_statuses: [BranchStatus]) -> None:
     '''Print all branches as a JSON array.
+
+    Always prints conflicting diffs, if any, because it was
+    simpler to implement.
     '''
     json.dump(jsonify(branch_statuses), sys.stdout)
     print('')
@@ -91,7 +94,7 @@ def jsonify(o):
         return o.name
     if hasattr(o, '_asdict'):
         return {jsonify(k): jsonify(v) for k, v in o._asdict().items()}
-    if isinstance(o, (list, tuple, set)):
+    if isinstance(o, (list, tuple, set, types.GeneratorType)):
         return list(map(jsonify, o))
     if isinstance(o, dict):
         return {jsonify(k): jsonify(v) for k, v in o.items()}
